@@ -16,8 +16,8 @@ st.title("🧪 UGP Sputtering Optimization Dashboard")
 def load_csv_data():
     df = pd.read_csv("./sputtering_database_clean.csv")
     
-    # We must force columns to be numeric so we can calculate median/mode. 
-    # 'coerce' turns "Not specified" into NaN (blank math space)
+    # Force columns to be numeric so we can calculate median/mode. 
+    # 'coerce' turns text like "Not specified" into NaN (blank math space)
     numeric_cols = ['Power_W', 'Working_Pressure_Pa', 'Base_Pressure_Pa', 'Temperature_C', 'Thickness_nm']
     for col in numeric_cols:
         df[col] = pd.to_numeric(df[col], errors='coerce')
@@ -26,7 +26,7 @@ def load_csv_data():
 
 df = load_csv_data()
 
-# Load the Vector Database for the Chatbot
+# Load the Vector Database for the Chatbot and Semantic Search
 @st.cache_resource
 def load_database():
     DB_PATH = "./vector_database"
@@ -49,56 +49,82 @@ with st.sidebar:
 tab1, tab2 = st.tabs(["📊 Statistical Overview (Macro)", "💬 AI Chatbot (Micro)"])
 
 # ==========================================
-# TAB 1: THE PROFESSOR's STATS DASHBOARD
+# TAB 1: AI-POWERED MACRO DASHBOARD
 # ==========================================
 with tab1:
-    st.markdown("### 📈 Industry Baseline Analytics")
-    st.markdown("Select a material below to view the statistical consensus across all published papers.")
+    st.markdown("### 📈 AI-Powered Semantic Analytics")
+    st.markdown("Type a material family. The AI will automatically group all chemical variations, typos, and aliases from your database to generate accurate macro-statistics.")
     
-    # Dropdown to pick the material
-    materials = df['Material'].dropna().unique()
-    selected_material = st.selectbox("Select Material to Analyze:", sorted(materials))
+    material_query = st.text_input("Enter Material Family (e.g., YBCO, TiO2):", "TiO2")
     
-    # Filter the dataframe to only show the selected material
-    filtered_df = df[df['Material'] == selected_material]
-    
-    st.write(f"**Found {len(filtered_df)} papers discussing {selected_material}**")
-    
-    if len(filtered_df) > 0:
-        # Calculate Median and Mode
-        col1, col2, col3, col4 = st.columns(4)
-        
-        # Power Stats
-        median_power = filtered_df['Power_W'].median()
-        mode_substrate = filtered_df['Substrate'].mode()[0] if not filtered_df['Substrate'].mode().empty else "N/A"
-        median_temp = filtered_df['Temperature_C'].median()
-        median_pressure = filtered_df['Working_Pressure_Pa'].median()
-        
-        col1.metric("Target Power (Median)", f"{median_power:.1f} W" if pd.notna(median_power) else "No Data")
-        col2.metric("Most Common Substrate (Mode)", str(mode_substrate))
-        col3.metric("Temperature (Median)", f"{median_temp:.1f} °C" if pd.notna(median_temp) else "No Data")
-        col4.metric("Working Pressure (Median)", f"{median_pressure:.4f} Pa" if pd.notna(median_pressure) else "No Data")
-        
-        st.markdown("---")
-        
-        # Plotly Graphs
-        st.markdown("#### Parameter Distributions")
-        graph_col1, graph_col2 = st.columns(2)
-        
-        with graph_col1:
-            # Substrate Popularity Bar Chart
-            substrate_counts = filtered_df['Substrate'].value_counts().reset_index()
-            substrate_counts.columns = ['Substrate', 'Count']
-            fig_sub = px.bar(substrate_counts, x='Substrate', y='Count', title=f"Preferred Substrates for {selected_material}", color='Substrate')
-            st.plotly_chart(fig_sub, use_container_width=True)
-            
-        with graph_col2:
-            # Power Distribution Histogram
-            fig_pow = px.histogram(filtered_df, x="Power_W", nbins=20, title=f"Power Settings Used for {selected_material} (Watts)", color_discrete_sequence=['#00CC96'])
-            st.plotly_chart(fig_pow, use_container_width=True)
+    if material_query:
+        if not api_key:
+            st.warning("Please enter your Gemini API Key in the sidebar to use the AI grouping feature.")
+        else:
+            with st.spinner(f"Scanning Vector Database and Grouping aliases for {material_query}..."):
+                genai.configure(api_key=api_key)
+                
+                # STEP A: Ask Vector DB for the top 50 closest papers
+                search_results = collection.query(query_texts=[material_query], n_results=50)
+                
+                # Extract all unique 'Material' strings from those 50 papers
+                retrieved_materials = list(set([meta['Material'] for meta in search_results['metadatas'][0]]))
+                
+                # STEP B: Use Gemini to filter and group the chemical aliases
+                llm = genai.GenerativeModel(selected_model)
+                filter_prompt = f"""
+                The user is researching the thin film material: '{material_query}'. 
+                Here is a list of raw material names found in our database: {retrieved_materials}
+                Which of these raw names belong to the '{material_query}' family? (Include alternate chemical formulas and obvious typos).
+                Return ONLY a comma-separated list of the exact matching strings from the list. Do not write any other text.
+                """
+                
+                try:
+                    # Get the grouped list from Gemini
+                    valid_materials_text = llm.generate_content(filter_prompt).text
+                    valid_materials = [m.strip() for m in valid_materials_text.split(',')]
+                    
+                    st.info(f"**AI successfully grouped these variations together:** {', '.join(valid_materials)}")
+                    
+                    # STEP C: Filter Pandas using the AI's validated list
+                    filtered_df = df[df['Material'].isin(valid_materials)]
+                    
+                    st.write(f"**Found {len(filtered_df)} total papers for the {material_query} family.**")
+                    
+                    if len(filtered_df) > 0:
+                        # Calculate Median and Mode
+                        col1, col2, col3, col4 = st.columns(4)
+                        
+                        median_power = filtered_df['Power_W'].median()
+                        mode_substrate = filtered_df['Substrate'].mode()[0] if not filtered_df['Substrate'].mode().empty else "N/A"
+                        median_temp = filtered_df['Temperature_C'].median()
+                        median_pressure = filtered_df['Working_Pressure_Pa'].median()
+                        
+                        col1.metric("Target Power (Median)", f"{median_power:.1f} W" if pd.notna(median_power) else "No Data")
+                        col2.metric("Most Common Substrate (Mode)", str(mode_substrate))
+                        col3.metric("Temperature (Median)", f"{median_temp:.1f} °C" if pd.notna(median_temp) else "No Data")
+                        col4.metric("Working Pressure (Median)", f"{median_pressure:.4f} Pa" if pd.notna(median_pressure) else "No Data")
+                        
+                        st.markdown("---")
+                        
+                        # Plotly Graphs
+                        st.markdown("#### Parameter Distributions")
+                        graph_col1, graph_col2 = st.columns(2)
+                        
+                        with graph_col1:
+                            substrate_counts = filtered_df['Substrate'].value_counts().reset_index()
+                            substrate_counts.columns = ['Substrate', 'Count']
+                            fig_sub = px.bar(substrate_counts, x='Substrate', y='Count', title=f"Preferred Substrates", color='Substrate')
+                            st.plotly_chart(fig_sub, use_container_width=True)
+                            
+                        with graph_col2:
+                            fig_pow = px.histogram(filtered_df, x="Power_W", nbins=20, title=f"Power Settings (Watts)", color_discrete_sequence=['#00CC96'])
+                            st.plotly_chart(fig_pow, use_container_width=True)
+                except Exception as e:
+                    st.error(f"An API error occurred during grouping: {e}")
 
 # ==========================================
-# TAB 2: YOUR RAG CHATBOT
+# TAB 2: RAG CHATBOT (MICRO)
 # ==========================================
 with tab2:
     if "messages" not in st.session_state:
@@ -108,7 +134,7 @@ with tab2:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-    if prompt := st.chat_input("E.g., What are the specific parameters for depositing YBCO in paper 10.1016...?"):
+    if prompt := st.chat_input("E.g., What are the exact parameters for depositing YBCO in paper 10.1016...?"):
         st.chat_message("user").markdown(prompt)
         st.session_state.messages.append({"role": "user", "content": prompt})
 
@@ -120,7 +146,9 @@ with tab2:
         llm = genai.GenerativeModel(selected_model)
 
         with st.chat_message("assistant"):
-            with st.spinner("Searching database and thinking..."):
+            with st.spinner("Searching database and formulating answer..."):
+                
+                # STEP A: RETRIEVE
                 results = collection.query(
                     query_texts=[prompt],
                     n_results=10 
@@ -129,6 +157,7 @@ with tab2:
                 retrieved_docs = results['documents'][0]
                 context = "\n\n".join(retrieved_docs)
                 
+                # STEP B: GENERATE
                 system_prompt = f"""
                 You are an expert materials science AI assistant helping an engineering student with their Undergraduate Project (UGP).
                 Your goal is to answer the user's question using ONLY the provided Database Context.
@@ -152,6 +181,7 @@ with tab2:
                     response = llm.generate_content(system_prompt)
                     ai_reply = response.text
                     
+                    # Append sources
                     sources_text = "\n\n**📚 Sources Used:**\n"
                     for meta in results['metadatas'][0]:
                         sources_text += f"- *Paper ID:* {meta['Paper_ID']} ({meta['Material']})\n"
