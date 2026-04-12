@@ -16,7 +16,7 @@ st.markdown("Ask questions about sputtering parameters (e.g., Power, Pressure, T
 # Streamlit reruns the script on every click. @st.cache_resource prevents it from reloading the DB every time.
 @st.cache_resource
 def load_database():
-    DB_PATH = r"DB_PATH = "./vector_database""
+    DB_PATH = "./vector_database"
     client = chromadb.PersistentClient(path=DB_PATH)
     return client.get_collection(name="sputtering_papers")
 
