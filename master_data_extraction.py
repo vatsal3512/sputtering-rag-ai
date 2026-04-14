@@ -11,39 +11,6 @@ OUTPUT_DIR = r"D:\UGP_METHOD2\master_extracted_data"
 # === Setup Gemini API Key Rotation ===
 # Put all 9 of your API keys inside this list as strings
 API_KEYS = [
-    "AIzaSyCCl1QEBn5p9wGKbUAT5_gC46y1A5g-vEE",
-    "AIzaSyBqERqEoBWt-576boH_TvkR9EFi9eebpbE",
-    "AIzaSyCERE2TbG7ULzhx-_7tL2buTAzffir4Uf8",
-    "AIzaSyDD343DVPSXpl6OVdL3dL01_eGO9H7EWBQ",
-    "AIzaSyADjtFUjkH0RIqoWHOwbPULX5cv2djSubI",
-    "AIzaSyAI_3tn1rW-13ZUUW5dOCBKGlA63eKxJeg",
-    "AIzaSyCd9cpPQk3ZMWzKTDd2-JlIDODYg3jz2gg",
-    "AIzaSyABQ82safFhrDOK-J6AgW_8IcfVRoS2x4c",
-    "AIzaSyD0knRxgQVm79U9qdJ5uNElMBoJcavCY4s",
-    "AIzaSyBac1abUM-qo2iSN_OronJzok_uCcho-Lo",
-    "AIzaSyDzme0g1bnMW52cEla4CfGYOIykz1QEfBg",
-    "AIzaSyB6Clg_-z5Gq9rHudxXsTJYpqorU1JyihA",
-    "AIzaSyD1zyfsbu-tFISYp8uQkT3ildXWfXv2aek",
-    "AIzaSyA0N5IbE0K22VjTva0dEhTuRGADLvURVpY",
-    "AIzaSyAw-zC9CxEuf4Ci-PIY6Rd7dyHmIQr2vSQ",
-    "AIzaSyAXkVoUK97rr_VBC8cxEHnT_sfP4pedtp0",
-    "AIzaSyA5PocUhSqzVHPmMWb8kxNCQHeru1G6KcU",
-    "AIzaSyAXagsPfXudPoXzbxdhV25LDkKfCaVKv-4",
-    "AIzaSyAL7PKxFEZIT9jvE_zUctq1Lpn0aKR_UFY",
-    "AIzaSyDDVVc37GmR_MlOdpqroxMzK5ingkiaLPE",
-    "AIzaSyApvVrGWQyw-E02stecVS_pCpmNBgx9ORs",
-    "AIzaSyB_lJFVNtNK1VIaAhBYcTTbxzQhMPqabRs",
-    "AIzaSyDASYc-cbozvYUYlcIXXMF3s-SpkhQ9ZO0",
-    "AIzaSyCUNUoof1qY7AOJHQc7kl5o3W5gLnlZepU",
-    "AIzaSyCBkfbC5ekL4t3623ntEv9TyxYlMoqjqSE",
-    "AIzaSyBEYPEty_ptYZjgVk3CaqukYPIsvHyJfIs",
-    "AIzaSyCt0sppOeLL2YTlZZSLUfRALAPKjEPeiSE",
-    "AIzaSyCb5XlYcbAqR6qyx2eWz7jN2hVYmBksOh8",
-    "AIzaSyDMecark2wF4k3m06AsWEjSGWYMg8ucOQI",
-    "AIzaSyBoIh_o-X5yGxuP2xNj773KD5ES89e0Mow",
-    "AIzaSyBq4zsikPKFz-whbCzeSY_P8hI_pIfSHlQ",
-    "AIzaSyCJy7dvlgbUVjmlIK_LomHj7McvB-liVeM"
-
 ]
 
 # Track which key we are currently using
@@ -178,7 +145,7 @@ def main():
                 except Exception as e:
                     print(f"\nError reading {folder}: {e}")
 
-    print(f"\n🎉 Extraction Run Complete or Paused!")
+    print(f"\n Extraction Run Complete or Paused!")
     print(f"Newly Extracted this session: {success_count} papers")
     print(f"Skipped (Already Done): {skipped_count} papers")
 
