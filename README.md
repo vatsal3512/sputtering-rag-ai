@@ -33,7 +33,7 @@ The resulting data is deployed via an interactive **Streamlit Dashboard**, bridg
 | `build_vector_db.py` | Script to embed the cleaned text data into the local Chroma vector space. |
 | `sputtering_database_clean2.csv` | The final, compiled, and cleaned master dataset containing 5,000+ extracted papers. |
 | `vector_database/` | Local directory containing the persistent ChromaDB semantic embeddings. |
-| `Final_ppt.pdf` | The final project defense presentation slides. |
+| `presentation.pptm` | The final project defense presentation slides. |
 | `requirements.txt` | Python dependencies required to run the dashboard and pipelines. |
 | `config.json` | Configuration file for model parameters and API limits. |
 
