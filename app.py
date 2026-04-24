@@ -12,13 +12,13 @@ st.title("Sputtering Optimization Dashboard")
 
 @st.cache_data
 def load_csv_data():
-    df = pd.read_csv("./sputtering_database_clean2.csv")
-    
+    df = pd.read_csv("./sputtering_database_clean_final.csv")
+
     # Force columns to be numeric, turning text like "Not specified" into NaN
     numeric_cols = ['Power_W', 'Working_Pressure_Pa', 'Base_Pressure_Pa', 'Temperature_C', 'Thickness_nm']
     for col in numeric_cols:
         df[col] = pd.to_numeric(df[col], errors='coerce')
-        
+
     return df
 
 df = load_csv_data()
@@ -50,19 +50,19 @@ tab1, tab2 = st.tabs(["📊 Statistical Overview (Macro)", "💬 AI Chatbot (Mic
 with tab1:
     st.markdown("### 📈 AI-Powered Semantic Analytics")
     st.markdown("Type a material family. The AI will automatically group all chemical variations to generate accurate macro-statistics.")
-    
+
     material_query = st.text_input("Enter Material Family (e.g., YBCO, ZnO, TiO2):", "ZnO")
-    
+
     if material_query:
         if not api_key:
             st.warning("Please enter your Gemini API Key in the sidebar to use the AI grouping feature.")
         else:
             with st.spinner(f"Scanning Vector Database and Grouping aliases for {material_query}..."):
                 genai.configure(api_key=api_key)
-                
+
                 search_results = collection.query(query_texts=[material_query], n_results=50)
                 retrieved_materials = list(set([meta['Material'] for meta in search_results['metadatas'][0]]))
-                
+
                 llm = genai.GenerativeModel(selected_model)
                 filter_prompt = f"""
                 The user is researching the thin film material: '{material_query}'. 
@@ -70,46 +70,46 @@ with tab1:
                 Which of these raw names belong to the '{material_query}' family? (Include alternate chemical formulas and obvious typos).
                 Return ONLY a comma-separated list of the exact matching strings from the list. Do not write any other text.
                 """
-                
+
                 try:
                     valid_materials_text = llm.generate_content(filter_prompt).text
                     valid_materials = [m.strip() for m in valid_materials_text.split(',')]
-                    
+
                     st.info(f"**AI successfully grouped these variations together:** {', '.join(valid_materials)}")
-                    
+
                     filtered_df = df[df['Material'].isin(valid_materials)].copy()
-                    
+
                     # DATA CLEANING FIX
                     filtered_df['Substrate'] = filtered_df['Substrate'].astype(str).str.title().str.strip()
                     filtered_df.loc[filtered_df['Substrate'].isin(['Nan', 'Not Specified']), 'Substrate'] = None
-                    
+
                     st.write(f"**Found {len(filtered_df)} total papers for the {material_query} family.**")
-                    
+
                     if len(filtered_df) > 0:
                         st.markdown("#### 🔬 Core Parameters Consensus")
                         col1, col2, col3, col4 = st.columns(4)
-                        
+
                         # Power Stats
                         mean_pow = filtered_df['Power_W'].mean()
                         median_pow = filtered_df['Power_W'].median()
                         mode_pow_series = filtered_df['Power_W'].mode()
                         mode_pow = mode_pow_series[0] if not mode_pow_series.empty else pd.NA
                         min_pow, max_pow = filtered_df['Power_W'].min(), filtered_df['Power_W'].max()
-                        
+
                         # Temperature Stats
                         mean_temp = filtered_df['Temperature_C'].mean()
                         median_temp = filtered_df['Temperature_C'].median()
                         mode_temp_series = filtered_df['Temperature_C'].mode()
                         mode_temp = mode_temp_series[0] if not mode_temp_series.empty else pd.NA
                         min_temp, max_temp = filtered_df['Temperature_C'].min(), filtered_df['Temperature_C'].max()
-                        
+
                         # Pressure Stats
                         mean_press = filtered_df['Working_Pressure_Pa'].mean()
                         median_press = filtered_df['Working_Pressure_Pa'].median()
                         mode_press_series = filtered_df['Working_Pressure_Pa'].mode()
                         mode_press = mode_press_series[0] if not mode_press_series.empty else pd.NA
                         min_press, max_press = filtered_df['Working_Pressure_Pa'].min(), filtered_df['Working_Pressure_Pa'].max()
-                        
+
                         # Substrate Stat
                         mode_sub = filtered_df['Substrate'].mode()[0] if not filtered_df['Substrate'].mode().empty else "No Data"
 
@@ -142,46 +142,68 @@ with tab1:
                                 st.write(f"**Range:** {min_press:.4f} - {max_press:.4f} Pa")
                             else:
                                 st.write("No Data")
-                                
+
                         with col4:
                             st.info("🔲 Top Substrate")
                             st.write(f"**Most Common:**")
                             st.write(f"{mode_sub}")
 
                         st.markdown("---")
-                        
+
                         # ==========================================
-                        # FIX: UPDATED PLOTLY GRAPHS (ALL DATA KEPT)
+                        # PLOTLY GRAPHS WITH SUBSTRATE FILTER
                         # ==========================================
                         st.markdown("#### Parameter Distributions")
-                        
+
                         row1_col1, row1_col2 = st.columns(2)
-                        
+
                         with row1_col1:
-                            # Plot ALL substrates, but turn off the legend so it fills the screen
-                            substrate_counts = filtered_df['Substrate'].dropna().value_counts().reset_index()
-                            substrate_counts.columns = ['Substrate', 'Count']
-                            fig_sub = px.bar(substrate_counts, x='Substrate', y='Count', 
-                                             title="Preferred Substrates", color='Substrate')
+                            # --- DETERMINISTIC SEMANTIC FILTER ---
+                            temp_subs = filtered_df['Substrate'].astype(str).str.upper()
+                            filtered_df['Clean_Substrate'] = 'Other / Complex'
+                            
+                            filtered_df.loc[temp_subs.str.contains('GLASS|CORNING|SODA-LIME|QUARTZ', na=False), 'Clean_Substrate'] = 'Glass'
+                            filtered_df.loc[temp_subs.str.contains('SIO2/SI|SI/SIO2|OXIDIZED SILICON', na=False), 'Clean_Substrate'] = 'SiO2 / Si'
+                            filtered_df.loc[temp_subs.str.contains('ITO', na=False), 'Clean_Substrate'] = 'ITO'
+                            filtered_df.loc[temp_subs.str.contains('SAPPHIRE|AL2O3', na=False), 'Clean_Substrate'] = 'Sapphire'
+                            filtered_df.loc[temp_subs.str.contains('PET|PEN|POLYETHYLENE|PLASTIC|KAPTON', na=False), 'Clean_Substrate'] = 'Polymers (PET/PEN)'
+                            filtered_df.loc[(temp_subs.str.contains('SI|SILICON', na=False)) & (filtered_df['Clean_Substrate'] == 'Other / Complex'), 'Clean_Substrate'] = 'Silicon (Si)'
+
+                            # Group by BOTH clean and original to keep track of what got clubbed
+                            substrate_counts = filtered_df.groupby(['Clean_Substrate', 'Substrate']).size().reset_index(name='Count')
+                            
+                            # Create a stacked bar chart! Color represents the original fragmented substrate.
+                            fig_sub = px.bar(substrate_counts, x='Clean_Substrate', y='Count', 
+                                             color='Substrate', 
+                                             title="Preferred Substrates (Hover for details)",
+                                             labels={'Clean_Substrate': 'Major Category'})
+                            
                             fig_sub.update_layout(xaxis_tickangle=-45, showlegend=False) 
                             st.plotly_chart(fig_sub, use_container_width=True)
-                            
+
+                            # Add the clickable expander table
+                            with st.expander("🔍 Click to view all grouped substrates"):
+                                display_df = substrate_counts.rename(columns={
+                                    'Clean_Substrate': 'Category', 
+                                    'Substrate': 'Original Name in Paper', 
+                                    'Count': 'Total Papers'
+                                })
+                                display_df = display_df.sort_values(by=['Category', 'Total Papers'], ascending=[True, False])
+                                st.dataframe(display_df, hide_index=True, use_container_width=True)
+
                         with row1_col2:
-                            # Plot ALL power data, increase bins, add boxplot for outliers
                             fig_pow = px.histogram(filtered_df, x="Power_W", nbins=50, marginal="box",
                                                    title="Power Settings (Watts)", color_discrete_sequence=['#00CC96'])
                             st.plotly_chart(fig_pow, use_container_width=True)
-                            
+
                         row2_col1, row2_col2 = st.columns(2)
-                        
+
                         with row2_col1:
-                            # Plot ALL temperature data, increase bins, add boxplot for outliers
                             fig_temp = px.histogram(filtered_df, x="Temperature_C", nbins=50, marginal="box",
                                                     title="Temperature Distribution (°C)", color_discrete_sequence=['#FF9F43'])
                             st.plotly_chart(fig_temp, use_container_width=True)
-                            
+
                         with row2_col2:
-                            # Plot ALL pressure data, increase bins, add boxplot for outliers
                             fig_press = px.histogram(filtered_df, x="Working_Pressure_Pa", nbins=50, marginal="box",
                                                      title="Working Pressure (Pa)", color_discrete_sequence=['#EA5455'])
                             st.plotly_chart(fig_press, use_container_width=True)
@@ -213,15 +235,15 @@ with tab2:
 
         with st.chat_message("assistant"):
             with st.spinner("Searching database and formulating answer..."):
-                
+
                 results = collection.query(query_texts=[prompt], n_results=10)
                 retrieved_docs = results['documents'][0]
                 context = "\n\n".join(retrieved_docs)
-                
+
                 system_prompt = f"""
                 You are an expert materials science AI assistant helping an engineering student with their Undergraduate Project (UGP).
                 Your goal is to answer the user's question using ONLY the provided Database Context.
-                
+
                 CRITICAL RULES:
                 1. NEVER guess, hallucinate, or bring in outside knowledge. 
                 2. ALWAYS state the exact numerical parameters.
@@ -235,19 +257,19 @@ with tab2:
                 User Question:
                 {prompt}
                 """
-                
+
                 try:
                     response = llm.generate_content(system_prompt)
                     ai_reply = response.text
-                    
+
                     sources_text = "\n\n**📚 Sources Used:**\n"
                     for meta in results['metadatas'][0]:
                         sources_text += f"- *Paper ID:* {meta['Paper_ID']} ({meta['Material']})\n"
-                    
+
                     full_response = ai_reply + sources_text
-                    
+
                     st.markdown(full_response)
                     st.session_state.messages.append({"role": "assistant", "content": full_response})
-                    
+
                 except Exception as e:
                     st.error(f"An API error occurred: {e}")
