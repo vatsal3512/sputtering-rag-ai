@@ -1,0 +1,31 @@
+# ── Secrets (NEVER commit these) ──────────────────────────────────────────────
+.env
+
+# ── Large data directories (not tracked — too large for git) ──────────────────
+data/
+data/grobid_xml/
+data/processed_articles/
+data/extracted_data/
+
+# ── Python cache ───────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+
+# ── Virtual environments ───────────────────────────────────────────────────────
+venv/
+.venv/
+env/
+
+# ── OS files ───────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── IDE ────────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+
+# -- Vector DB ------------------------------------------------------------------
+vector_database/
+

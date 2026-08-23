@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sputtering RAG AI — Complete Project Reference</title>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#f8f9fc',
+        primaryTextColor: '#1e293b',
+        primaryBorderColor: '#4f46e5',
+        lineColor: '#64748b',
+        secondaryColor: '#eef2ff',
+        tertiaryColor: '#fff'
+      }
+    });
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+
+    :root {
+      --accent: #4f46e5;
+      --accent2: #7c3aed;
+      --bg: #ffffff;
+      --surface: #f8f9fc;
+      --border: #e2e8f0;
+      --text: #1e293b;
+      --muted: #64748b;
+      --code-bg: #1e1e2e;
+      --code-text: #cdd6f4;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.75;
+      font-size: 15px;
+    }
+
+    /* ── Cover Page ── */
+    .cover {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: white;
+      padding: 60px 40px;
+      page-break-after: always;
+    }
+
+    .cover .badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 999px;
+      padding: 6px 18px;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      backdrop-filter: blur(10px);
+    }
+
+    .cover h1 {
+      font-size: 52px;
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, #a78bfa, #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .cover .subtitle {
+      font-size: 20px;
+      color: rgba(255, 255, 255, 0.75);
+      max-width: 600px;
+      margin-bottom: 48px;
+    }
+
+    .cover .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      max-width: 700px;
+      width: 100%;
+    }
+
+    .cover .meta-card {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .cover .meta-card .label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 6px;
+    }
+
+    .cover .meta-card .value {
+      font-size: 15px;
+      font-weight: 600;
+      color: white;
+    }
+
+    /* ── TOC ── */
+    .toc-page {
+      padding: 80px 80px;
+      page-break-after: always;
+    }
+
+    .toc-page h2 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 32px;
+      color: var(--accent);
+    }
+
+    .toc-list {
+      list-style: none;
+    }
+
+    .toc-list li {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      padding: 10px 0;
+      border-bottom: 1px dotted var(--border);
+      font-size: 15px;
+    }
+
+    .toc-list li .num {
+      font-weight: 700;
+      color: var(--accent);
+      min-width: 28px;
+    }
+
+    .toc-list li .title {
+      flex: 1;
+    }
+
+    .toc-list li .dots {
+      flex: 1;
+      border-bottom: 1px dotted #ccc;
+      margin: 0 8px;
+    }
+
+    /* ── Main Content ── */
+    .content {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 60px 60px;
+    }
+
+    section {
+      margin-bottom: 60px;
+      page-break-inside: avoid;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 3px solid var(--accent);
+    }
+
+    .section-num {
+      background: var(--accent);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .section-header h2 {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    h3 {
+      font-size: 19px;
+      font-weight: 600;
+      color: var(--accent2);
+      margin: 32px 0 12px;
+    }
+
+    h4 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 20px 0 8px;
+    }
+
+    p {
+      margin-bottom: 14px;
+      color: var(--text);
+    }
+
+    ul,
+    ol {
+      padding-left: 24px;
+      margin-bottom: 14px;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    /* ── Callout boxes ── */
+    .callout {
+      border-left: 4px solid var(--accent);
+      background: #eef2ff;
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin: 20px 0;
+    }
+
+    .callout.warning {
+      border-color: #f59e0b;
+      background: #fffbeb;
+    }
+
+    .callout.success {
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+
+    .callout strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--accent);
+    }
+
+    .callout.warning strong {
+      color: #b45309;
+    }
+
+    .callout.success strong {
+      color: #047857;
+    }
+
+    /* ── Tables ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    thead {
+      background: var(--accent);
+      color: white;
+    }
+
+    thead th {
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0.03em;
+    }
+
+    tbody tr:nth-child(even) {
+      background: var(--surface);
+    }
+
+    tbody tr:hover {
+      background: #eef2ff;
+    }
+
+    tbody td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody td:first-child {
+      font-weight: 500;
+    }
+
+    /* ── Code blocks ── */
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      border-radius: 10px;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 16px 0;
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      background: #eef2ff;
+      color: var(--accent);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    pre code {
+      background: none;
+      color: inherit;
+      padding: 0;
+      font-size: inherit;
+    }
+
+    /* ── Architecture diagram ── */
+    .arch-box {
+      background: var(--code-bg);
+      color: #a6e3a1;
+      border-radius: 12px;
+      padding: 28px 32px;
+      font-family: 'Fira Code', monospace;
+      font-size: 12.5px;
+      line-height: 1.65;
+      overflow-x: auto;
+      margin: 20px 0;
+    }
+
+    /* ── Stage cards ── */
+    .stage-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 24px 0;
+      page-break-inside: avoid;
+    }
+
+    .stage-header {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      color: white;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .stage-tag {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    .stage-name {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .stage-body {
+      padding: 20px;
+    }
+
+    .io-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .io-box {
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 13px;
+    }
+
+    .io-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .io-value {
+      font-family: 'Fira Code', monospace;
+      color: var(--accent);
+      font-size: 13px;
+    }
+
+    /* ── Decision card ── */
+    .decision {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 24px;
+      margin: 20px 0;
+      border: 1px solid var(--border);
+    }
+
+    .decision h4 {
+      margin-top: 0;
+      color: var(--accent2);
+      font-size: 17px;
+    }
+
+    .verdict {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #dcfce7;
+      color: #166534;
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    /* ── File map ── */
+    .filemap {
+      background: var(--code-bg);
+      color: #cdd6f4;
+      border-radius: 10px;
+      padding: 24px;
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .filemap .file-green {
+      color: #a6e3a1;
+    }
+
+    .filemap .file-blue {
+      color: #89b4fa;
+    }
+
+    .filemap .file-yellow {
+      color: #f9e2af;
+    }
+
+    .filemap .file-red {
+      color: #f38ba8;
+    }
+
+    .filemap .file-muted {
+      color: #6c7086;
+    }
+
+    /* ── Glossary ── */
+    .glossary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .glossary-item {
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 14px 16px;
+      border-left: 3px solid var(--accent);
+    }
+
+    .glossary-term {
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    .glossary-def {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ── Print ── */
+    @media print {
+      body {
+        font-size: 13px;
+      }
+
+      .cover {
+        min-height: auto;
+        padding: 60px 40px;
+      }
+
+      .cover h1 {
+        font-size: 40px;
+        -webkit-text-fill-color: #4f46e5;
+      }
+
+      .content {
+        padding: 40px 50px;
+      }
+
+      section {
+        page-break-inside: avoid;
+      }
+
+      pre {
+        font-size: 11px;
+      }
+
+      .arch-box {
+        font-size: 11px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+     COVER PAGE
+════════════════════════════════════════════════════════════════════ -->
+  <div class="cover">
+    <div class="badge">Project Reference Document</div>
+    <h1>Sputtering RAG AI</h1>
+    <p class="subtitle">
+      Automated Literature Review &amp; AI Research Assistant<br />
+      for Thin-Film Sputtering Deposition
+    </p>
+    <div class="meta-grid">
+      <div class="meta-card">
+        <div class="label">Institution</div>
+        <div class="value">IIT Kanpur<br />Materials Science</div>
+      </div>
+      <div class="meta-card">
+        <div class="label">Papers Processed</div>
+        <div class="value">5,293 papers<br />from journals</div>
+      </div>
+      <div class="meta-card">
+        <div class="label">Core Stack</div>
+        <div class="value">GROBID · Gemini<br />SPECTER · LangGraph</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+     TABLE OF CONTENTS
+════════════════════════════════════════════════════════════════════ -->
+  <div class="toc-page">
+    <h2>Table of Contents</h2>
+    <ol class="toc-list">
+      <li><span class="num">1</span><span class="title">What This Project Does</span></li>
+      <li><span class="num">2</span><span class="title">The Problem It Solves</span></li>
+      <li><span class="num">3</span><span class="title">Full System Architecture</span></li>
+      <li><span class="num">4</span><span class="title">Tech Stack — Every Choice Justified</span></li>
+      <li><span class="num">5</span><span class="title">The Pipeline — Stage by Stage</span></li>
+      <li><span class="num">6</span><span class="title">The Application — Two-Tab Design</span></li>
+      <li><span class="num">7</span><span class="title">Key Architectural Decisions</span></li>
+      <li><span class="num">8</span><span class="title">How to Run</span></li>
+      <li><span class="num">9</span><span class="title">Project File Map</span></li>
+      <li><span class="num">10</span><span class="title">Glossary</span></li>
+    </ol>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════════════════════════════════════════ -->
+  <div class="content">
+
+    <!-- ─── SECTION 1 ─── -->
+    <section>
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <h2>What This Project Does</h2>
+      </div>
+
+      <p>This system ingests <strong>5,000+ academic research papers</strong> on thin-film sputtering deposition,
+        extracts structured experimental parameters from them using an LLM, embeds everything into a
+        scientific vector database, and exposes all of it through a two-tab interactive dashboard.</p>
+
+      <div class="callout success">
+        <strong>The output in one sentence</strong>
+        A researcher types "ZnO" and instantly gets the mean deposition power, median working pressure,
+        most common substrate, and distribution charts — aggregated from hundreds of papers that would
+        otherwise take days to read manually.
+      </div>
+
+      <h3>Concrete Example</h3>
+      <p><strong>Input (Tab 1):</strong> User types <code>ZnO</code></p>
+      <p><strong>Output (Tab 1):</strong></p>
+      <ul>
+        <li>AI groups aliases: <em>ZnO, zinc oxide, Zn0, ZnO:Al, ZnO:Ga</em></li>
+        <li>Found: <strong>312 papers</strong> in the ZnO family</li>
+        <li>Mean power: <strong>127 W</strong> &nbsp;|&nbsp; Median: <strong>100 W</strong> &nbsp;|&nbsp; Range: 5–500 W
+        </li>
+        <li>Mean pressure: <strong>0.53 Pa</strong> &nbsp;|&nbsp; Most common substrate: <strong>Glass</strong></li>
+        <li>Interactive charts: power histogram, temperature distribution, substrate bar chart</li>
+      </ul>
+
+      <p><strong>Input (Tab 2):</strong> "What are the exact parameters for YBCO deposition in paper 10.1016/xyz?"</p>
+      <p><strong>Output (Tab 2):</strong> The AI retrieves the specific paper from the vector database and answers with
+        exact values, citing the Paper_ID. It cannot hallucinate — it can only report what's in the database.</p>
+    </section>
+
+    <!-- ─── SECTION 2 ─── -->
+    <section>
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <h2>The Problem It Solves</h2>
+      </div>
+
+      <h3>Domain Background</h3>
+      <p>
+        Thin-film sputtering is a physical vapour deposition technique where ions from a plasma
+        knock atoms off a solid target material. Those atoms travel through vacuum and deposit as
+        a nanometer-scale film on a substrate. It's used to make solar cells, sensors, hard coatings,
+        touchscreen electrodes (ITO), and superconducting films.
+      </p>
+      <p>
+        To deposit a specific material — say, Zinc Oxide (ZnO) — a researcher must choose:
+        what RF power to apply, at what chamber pressure, using what gas mixture (Ar/O₂ ratio),
+        on what substrate, at what temperature. Get any of these wrong and the film has the wrong
+        properties.
+      </p>
+
+      <h3>The Old Manual Process</h3>
+      <ol>
+        <li>Search Google Scholar / Web of Science for "ZnO sputtering"</li>
+        <li>Download 50–200 papers</li>
+        <li>Read the Experimental section of each paper</li>
+        <li>Manually note parameters — but they're written differently in every paper:</li>
+      </ol>
+      <pre><code>Paper A: "RF power of 150 W at 5 mTorr Ar/O2 (4:1) gas ratio"
+Paper B: "2 W/cm² power density, working pressure 0.67 Pa, pure Ar atmosphere"
+Paper C: "100-200 W, argon flow 40 sccm, oxygen 10 sccm, 3×10⁻³ Torr"</code></pre>
+      <p>All three describe similar conditions but in incompatible notation. Comparing them requires manual unit
+        conversion.</p>
+
+      <h3>What This System Provides</h3>
+      <p>The same researcher opens the dashboard, types "ZnO", and gets the answer in seconds — aggregated from 312
+        papers, with all units normalised to Pa/W/nm/°C.</p>
+
+      <div class="callout">
+        <strong>Time saved</strong>
+        Manual literature survey: 3–7 days. This system: &lt;10 seconds query time after the one-time pipeline setup.
+      </div>
+    </section>
+
+    <!-- ─── SECTION 3 ─── -->
+    <section>
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <h2>Full System Architecture</h2>
+      </div>
+
+      <style>
+        .css-diagram { max-width: 900px; margin: 40px auto; font-family: 'Inter', sans-serif; text-align: center; }
+        .css-diagram .box { padding: 15px; border-radius: 8px; border: 2px solid; font-weight: 600; margin: 0 auto; width: 85%; background: #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .css-diagram .box small { display: block; font-weight: 400; margin-top: 6px; color: #64748b; font-size: 13px; line-height: 1.4; }
+        .css-diagram .input-box { border-color: #7c3aed; background: #eef2ff; color: #1e293b; }
+        .css-diagram .stage-box { border-color: #4f46e5; background: #f8f9fc; color: #1e293b; }
+        .css-diagram .db-box { border-color: #10b981; background: #ecfdf5; color: #1e293b; border-radius: 20px; }
+        .css-diagram .app-box { border-color: #f59e0b; background: #fffbeb; color: #1e293b; }
+        .css-diagram .arrow { font-size: 24px; color: #94a3b8; margin: 12px 0; font-weight: bold; }
+        .css-diagram .diagram-grid { display: flex; gap: 30px; align-items: stretch; margin-top: 20px; }
+        .css-diagram .diagram-column { flex: 1; background: #f1f5f9; padding: 25px; border-radius: 12px; border: 2px dashed #cbd5e1; display: flex; flex-direction: column; }
+        .css-diagram .column-title { font-weight: 700; font-size: 16px; color: #475569; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; }
+        .css-diagram .app-split { display: flex; gap: 15px; margin-top: 15px; width: 100%; }
+        .css-diagram .app-path { flex: 1; display: flex; flex-direction: column; align-items: center; }
+        .css-diagram .path-label { font-size: 12px; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.5px; }
+        
+        @media (max-width: 768px) {
+          .css-diagram .diagram-grid { flex-direction: column; }
+        }
+      </style>
+
+      <div class="css-diagram">
+        <div class="box input-box">
+          5,000+ Academic PDFs
+          <small>(Sputtering Papers)</small>
+        </div>
+        
+        <div class="arrow">↓</div>
+
+        <div class="diagram-grid">
+          <!-- Left Column: Pipeline -->
+          <div class="diagram-column">
+            <div class="column-title">Offline Data Pipeline</div>
+            
+            <div class="box stage-box">STAGE 1: GROBID Parser<br><small>Extracts TEI XML & Sputtering Paragraphs</small></div>
+            <div class="arrow">↓</div>
+            
+            <div class="box stage-box">STAGE 2: Gemini NER<br><small>Extracts 10 Fields via LLM JSON</small></div>
+            <div class="arrow">↓</div>
+            
+            <div class="box stage-box">STAGE 3: Unit Normalisation<br><small>Normalises Pa, W, nm, °C</small></div>
+            <div class="arrow">↓</div>
+            
+            <div class="box stage-box">STAGE 4: Sputtering Filter<br><small>Removes CVD/ALD/PLD rows</small></div>
+            <div class="arrow">↓</div>
+            
+            <div class="box db-box">Final Clean Dataset<br><small>Used directly by Dashboard (Tab 1)</small></div>
+            <div class="arrow">↓</div>
+            
+            <div class="box stage-box">STAGE 5: SPECTER Embeddings<br><small>768-dim semantic vectors</small></div>
+            <div class="arrow">↓</div>
+            
+            <div class="box db-box">ChromaDB Vector Store<br><small>Local SQLite Database</small></div>
+          </div>
+
+          <!-- Right Column: App -->
+          <div class="diagram-column">
+            <div class="column-title">Streamlit App Interface</div>
+            
+            <div class="box input-box">User Query</div>
+            <div class="arrow">↓</div>
+            
+            <div class="app-split">
+               <div class="app-path">
+                 <div class="path-label">Macro Stats Search</div>
+                 <div class="box app-box">Tab 1 (Macro)<br><small>Computes Pandas stats & plots charts</small></div>
+               </div>
+               
+               <div class="app-path">
+                 <div class="path-label">Micro Q&A</div>
+                 <div class="box app-box">LangGraph Router<br><small>Classifies query type</small></div>
+                 <div class="arrow">↓</div>
+                 <div class="box app-box">Retrieval Node<br><small>Queries ChromaDB + Gemini answers</small></div>
+               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── SECTION 4 ─── -->
+    <section>
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <h2>Tech Stack — Every Choice Justified</h2>
+      </div>
+
+      <!-- GROBID -->
+      <div class="decision">
+        <h4>4.1 — GROBID: PDF Parser</h4>
+        <div class="verdict">✓ Chosen</div>
+        <p>GROBID is a machine-learning library that converts academic PDFs into structured TEI XML, correctly
+          identifying titles, abstracts, section headings, body paragraphs, tables, and references. It is used in
+          production by Semantic Scholar and CrossRef to parse millions of papers.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Alternative</th>
+              <th>Why it doesn't work</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>PyPDF2 / pdfplumber</td>
+              <td>Extracts raw text with no structure. Cannot identify which text is a section heading vs. a paragraph
+                vs. a table. Two-column layouts become garbled.</td>
+            </tr>
+            <tr>
+              <td>Adobe PDF Extract API</td>
+              <td>Paid service, requires internet per request, returns flat text without scholarly structure awareness.
+              </td>
+            </tr>
+            <tr>
+              <td>LLM-based PDF parsing</td>
+              <td>PDF pages as images sent to a vision LLM is expensive (~$0.01–0.10 per page), slow, and has
+                hallucination risk for layout detection.</td>
+            </tr>
+            <tr>
+              <td style="color:#166534;font-weight:700">GROBID ✓</td>
+              <td style="color:#166534">Free, open source, trained specifically on scientific papers, preserves full
+                document structure, correctly identifies the Experimental/Methods section — exactly where parameters
+                live.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Gemini -->
+      <div class="decision">
+        <h4>4.2 — Gemini 2.5 Flash: LLM for NER Extraction</h4>
+        <div class="verdict">✓ Chosen</div>
+        <p>Used as a <em>structured extractor</em>, not a chatbot. Given paper text, it outputs a JSON object with 10
+          fields. This is a 2024-era pattern: LLM-as-parser.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Alternative</th>
+              <th>Why it doesn't work</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>spaCy / NLTK NER</td>
+              <td>Traditional NER models are trained on fixed entity types (Person, Location, Organisation). Cannot
+                extract domain-specific numeric values with units from unstructured prose.</td>
+            </tr>
+            <tr>
+              <td>Fine-tuned BERT</td>
+              <td>Would need thousands of labelled examples (paper text → JSON) to fine-tune. Not available for
+                sputtering domain. Training cost is high.</td>
+            </tr>
+            <tr>
+              <td>GPT-4</td>
+              <td>Works equally well or better but costs ~10× more per token. At 5,000 papers this matters.</td>
+            </tr>
+            <tr>
+              <td style="color:#166534;font-weight:700">Gemini 2.5 Flash ✓</td>
+              <td style="color:#166534">Free tier with generous daily quotas, fast response, reliably follows complex
+                JSON schema instructions, supports multi-key rotation to handle rate limits across 5,000 papers.</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="callout warning">
+          <strong>Critical: LLM is NOT used for statistics</strong>
+          If you ask an LLM "what is the mean power for ZnO?", it will confidently give you a wrong number. The LLM is
+          used only where it excels: reading prose and extracting structure. Statistics are computed by pandas from the
+          actual database.
+        </div>
+      </div>
+
+      <!-- SPECTER -->
+      <div class="decision">
+        <h4>4.3 — SPECTER (allenai-specter): Scientific Embedding Model</h4>
+        <div class="verdict">✓ Chosen — Most important choice in the stack</div>
+        <p>Converts each paper record into a 768-dimensional vector that captures semantic meaning. Similar records
+          cluster together in vector space, enabling "find papers about high-power ZnO deposition" as a
+          nearest-neighbour search.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Alternative</th>
+              <th>Why it's wrong for this project</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>all-MiniLM-L6-v2 (ChromaDB default)</td>
+              <td>Trained on general English (Reddit, Wikipedia, news). Does not understand "HiPIMS", "MTorr",
+                "sputtering yield", or "reactive deposition" as scientific concepts. A query for "high power deposition"
+                might retrieve papers about electrical grid power.</td>
+            </tr>
+            <tr>
+              <td>text-embedding-004 (Google Cloud)</td>
+              <td>Cloud API — requires internet and paid API call for every single user query. Adds latency and cost.
+                App cannot work offline. At 5,293 vectors × N queries per day, this becomes expensive.</td>
+            </tr>
+            <tr>
+              <td>SciBERT (allenai/scibert_scivocab_uncased)</td>
+              <td>Trained on 1.14M scientific papers via masked language modelling (MLM). MLM is optimised for
+                token-level tasks (classification, NER) — not for generating document-level similarity vectors. SciBERT
+                embeddings are not well-calibrated for semantic similarity ranking.</td>
+            </tr>
+            <tr>
+              <td>OpenAI text-embedding-3-small</td>
+              <td>Paid API, cloud dependency, general-purpose (same issue as MiniLM for scientific jargon).</td>
+            </tr>
+            <tr>
+              <td style="color:#166534;font-weight:700">SPECTER ✓</td>
+              <td style="color:#166534">Trained by AllenAI specifically for scientific document similarity. Training
+                task: "paper A and paper B (which A cites) should embed close together." This directly matches the use
+                case: "query about sputtering parameters should retrieve the most similar paper records." Runs 100%
+                locally. No API key. No internet needed after first download.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ChromaDB -->
+      <div class="decision">
+        <h4>4.4 — ChromaDB: Vector Database</h4>
+        <div class="verdict">✓ Chosen</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Alternative</th>
+              <th>Why it doesn't fit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Pinecone / Weaviate</td>
+              <td>Cloud-hosted. Requires account, API key, internet. Not suitable for a local research tool in a lab
+                environment.</td>
+            </tr>
+            <tr>
+              <td>FAISS (Facebook)</td>
+              <td>Library, not a database. No persistence layer — must manually save/load index. No metadata filtering.
+                Complex API.</td>
+            </tr>
+            <tr>
+              <td>Qdrant</td>
+              <td>Good alternative, but requires Docker to run properly. Overkill for a single-machine research tool
+                with &lt;10K vectors.</td>
+            </tr>
+            <tr>
+              <td style="color:#166534;font-weight:700">ChromaDB ✓</td>
+              <td style="color:#166534">Zero-configuration file-based persistence (one chroma.sqlite3 file). Native
+                Python API. Supports metadata filtering. Open source. At 5,293 vectors, query latency is &lt;100ms on
+                CPU. Scales to ~1M vectors before needing a dedicated server.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- LangChain -->
+      <div class="decision">
+        <h4>4.5 — LangChain + LangGraph: AI Application Framework</h4>
+        <div class="verdict">✓ Chosen (for app.py only — not for pipeline scripts)</div>
+        <p><strong>LangChain</strong> provides:</p>
+        <ul>
+          <li><code>ChatGoogleGenerativeAI</code> — standard interface over Gemini (swappable with any other LLM)</li>
+          <li><code>ChatPromptTemplate</code> — structured prompts with typed variables; system role separated from
+            human role</li>
+          <li><code>PydanticOutputParser</code> — enforces that LLM output parses into a typed Python object</li>
+        </ul>
+        <p><strong>LangGraph</strong> provides the routing agent:</p>
+        <pre><code>User Query → Router Node → "retrieval"   → Retrieval Node → answer
+                         → "statistical" → Redirect Node  → "use Tab 1"</code></pre>
+        <p>Why this matters: The original code used a <em>prompt instruction</em> ("if user asks for stats, say X").
+          LLMs can ignore prompt instructions. With LangGraph, the retrieval node is <em>literally unreachable</em> from
+          a statistical query — routing is enforced in Python code, not in text.</p>
+        <div class="callout">
+          <strong>Why pipeline scripts still use raw Gemini SDK</strong>
+          LangChain adds value when you need composability (chain operators), structured parsers, or standard
+          interfaces. The pipeline scripts make direct API calls with f-string prompts — they don't need composability,
+          and the few-shot f-string prompt is clearer and easier to maintain for that context.
+        </div>
+      </div>
+
+      <!-- Pydantic -->
+      <div class="decision">
+        <h4>4.6 — Pydantic: Schema Validation</h4>
+        <div class="verdict">✓ Chosen</div>
+        <p>Every LLM JSON response in the extraction pipeline is validated against a strict schema before being written
+          to disk.</p>
+        <pre><code>class ExtractionResult(BaseModel):
+    Material:          str
+    Substrate:         str
+    Deposition_Method: str
+    Power:             str
+    # ... 10 fields, all required, all str
+
+try:
+    validated = ExtractionResult.model_validate_json(raw_llm_response)
+    json.dump(validated.model_dump(), output_file)   # ← only clean data written
+except ValidationError as e:
+    logging.warning(f"Skipped: {e}")                 # ← bad response logged, skipped</code></pre>
+        <p><strong>Without this</strong>: A null field or missing key from Gemini gets written to disk. The next stage
+          crashes silently or produces incorrect statistics. The bug is invisible.</p>
+        <p><strong>With this</strong>: The database is guaranteed clean. All failures are logged to
+          <code>extraction_errors.log</code> with the raw response for inspection.</p>
+      </div>
+
+      <!-- Streamlit -->
+      <div class="decision">
+        <h4>4.7 — Streamlit: Dashboard Framework</h4>
+        <div class="verdict">✓ Chosen</div>
+        <p>Users are domain scientists, not web developers. Priorities: correct data analysis, fast iteration,
+          interactive charts. Streamlit converts Python data science code directly into a web UI:</p>
+        <pre><code># This one line renders a full interactive histogram with a box plot:
+st.plotly_chart(px.histogram(df, x="Power_W", nbins=50, marginal="box"))</code></pre>
+        <p>The equivalent in React+D3 would be 3 files and 100+ lines. For a research tool, this trade-off is correct.
+        </p>
+      </div>
+    </section>
+
+    <!-- ─── SECTION 5 ─── -->
+    <section>
+      <div class="section-header">
+        <div class="section-num">5</div>
+        <h2>The Pipeline — Stage by Stage</h2>
+      </div>
+
+      <!-- Stage 1 -->
+      <div class="stage-card">
+        <div class="stage-header">
+          <span class="stage-tag">STAGE 1</span>
+          <span class="stage-name">full_grobid_pipeline.py — PDF → Structured JSON</span>
+        </div>
+        <div class="stage-body">
+          <div class="io-row">
+            <div class="io-box">
+              <div class="io-label">Input</div>
+              <div class="io-value">*.grobid.tei.xml (TEI XML files)</div>
+            </div>
+            <div class="io-box">
+              <div class="io-label">Output</div>
+              <div class="io-value">structured_data.json per paper</div>
+            </div>
+          </div>
+          <p><strong>What GROBID does first</strong> (external — cloud server): Takes a raw PDF, uses ML models to
+            identify document structure, returns TEI XML with labelled sections: <code>&lt;title&gt;</code>,
+            <code>&lt;abstract&gt;</code>, <code>&lt;body&gt;&lt;div&gt;</code> etc.</p>
+          <p><strong>What this script does</strong>:</p>
+          <ol>
+            <li>Parses TEI XML using BeautifulSoup's <code>xml</code> parser (requires <code>lxml</code>)</li>
+            <li>Extracts title, abstract, and all body <code>&lt;div&gt;</code> sections</li>
+            <li>For each paragraph, runs a 30-term keyword filter (<em>sputter, pressure, argon, magnetron,
+                HiPIMS...</em>)</li>
+            <li>Keeps only paragraphs containing sputtering-relevant content</li>
+            <li>Saves clean JSON per paper</li>
+          </ol>
+          <div class="callout">
+            <strong>Why keyword filter here?</strong>
+            Each paper has ~20–50 paragraphs. Sending all to the LLM in Stage 2 wastes tokens (cost + latency) and
+            dilutes the relevant content (lower accuracy). The filter keeps only methodology paragraphs, reducing token
+            count by ~70% with negligible information loss.
+          </div>
+          <p><strong>Output format:</strong></p>
+          <pre><code>{
+  "paper_id": "paper_slug",
+  "title": "ZnO thin films deposited by...",
+  "abstract": "We report on the deposition of...",
+  "sections": [
+    {
+      "heading": "Experimental",
+      "text": "Films were deposited by RF magnetron sputtering at 150 W..."
+    }
+  ]
+}</code></pre>
+        </div>
+      </div>
+
+      <!-- Stage 2 -->
+      <div class="stage-card">
+        <div class="stage-header">
+          <span class="stage-tag">STAGE 2</span>
+          <span class="stage-name">master_data_extraction.py — Gemini NER</span>
+        </div>
+        <div class="stage-body">
+          <div class="io-row">
+            <div class="io-box">
+              <div class="io-label">Input</div>
+              <div class="io-value">structured_data.json per paper</div>
+            </div>
+            <div class="io-box">
+              <div class="io-label">Output</div>
+              <div class="io-value">paper_extracted.json per paper</div>
+            </div>
+          </div>
+          <p><strong>The 3-shot few-shot prompt</strong>: Three real-world examples precede each paper's actual text.
+            This calibrates the LLM for edge cases:</p>
+          <pre><code>TEXT: "ZnO films on glass by RF sputtering at 150 W, Ar/O2 (4:1), 5 mTorr, 300°C"
+OUTPUT: {"Material":"ZnO","Substrate":"Glass","Power":"150 W","Working_Pressure":"5 mTorr",...}
+
+TEXT: "TiN coatings by DC reactive sputtering from Ti target, N2/Ar, 2 Pa, 40 W/cm²"
+OUTPUT: {"Material":"TiN","Deposition_Method":"DC Reactive Sputtering","Power":"40 W/cm²",...}
+
+TEXT: "ITO on PET by HiPIMS, 3 mTorr, 2 kW peak, room temperature, 120 nm"
+OUTPUT: {"Material":"ITO","Substrate":"PET","Deposition_Method":"HiPIMS","Film_Thickness":"120 nm",...}
+
+Now extract from: {actual paper text}</code></pre>
+          <p><strong>Why 3 examples?</strong> Edge cases that fail zero-shot: "2 kW peak" (is it kW or W?), "room
+            temperature" (is it RT or 25°C?), "100-200 W" (take lower bound? midpoint?). The examples enforce a
+            consistent style.</p>
+          <p><strong>API key rotation + rate limiting</strong>: 4.5s sleep between calls. On quota exhaustion after 3
+            retries → rotate to next key from <code>.env</code>. Pipeline saves progress after each paper — can resume
+            after interruption.</p>
+          <p><strong>Pydantic validation</strong>: All 10 fields must be strings. Validation errors logged to
+            <code>extraction_errors.log</code>, paper skipped cleanly.</p>
+        </div>
+      </div>
+
+      <!-- Stage 3 -->
+      <div class="stage-card">
+        <div class="stage-header">
+          <span class="stage-tag">STAGE 3</span>
+          <span class="stage-name">post_processing_eda.py — Unit Normalisation</span>
+        </div>
+        <div class="stage-body">
+          <div class="io-row">
+            <div class="io-box">
+              <div class="io-label">Input</div>
+              <div class="io-value">All *_extracted.json files</div>
+            </div>
+            <div class="io-box">
+              <div class="io-label">Output</div>
+              <div class="io-value">sputtering_database_clean.csv</div>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Parser Function</th>
+                <th>Handles</th>
+                <th>Outputs</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>parse_pressure()</code></td>
+                <td>MTorr, Torr, mbar, bar, Pa, scientific notation (5×10⁻³)</td>
+                <td>Pa (float)</td>
+              </tr>
+              <tr>
+                <td><code>parse_temperature()</code></td>
+                <td>K, °C, "RT", "room temperature", "room temp"</td>
+                <td>°C (float)</td>
+              </tr>
+              <tr>
+                <td><code>parse_thickness()</code></td>
+                <td>Å, nm, μm, mm</td>
+                <td>nm (float)</td>
+              </tr>
+              <tr>
+                <td><code>parse_power()</code></td>
+                <td>W, kW, mW, W/cm²</td>
+                <td>W (float)</td>
+              </tr>
+              <tr>
+                <td><code>clean_gas_mixture()</code></td>
+                <td>"Argon + oxygen", "Ar 80% O2 20%", "pure Ar"</td>
+                <td>Ar/O2/N2/H2 tags</td>
+              </tr>
+            </tbody>
+          </table>
+          <p><strong>Scientific notation example</strong>: "5×10⁻³ Torr" → 5 × 10⁻³ × 133.322 Pa = 0.667 Pa</p>
+          <p><strong>Outlier threshold</strong>: Films &gt;2,000 nm excluded from EDA plots. This is a documented
+            constant (<code>thickness_outlier_threshold_nm</code> in <code>config.json</code>), not a magic number.</p>
+        </div>
+      </div>
+
+      <!-- Stage 4 -->
+      <div class="stage-card">
+        <div class="stage-header">
+          <span class="stage-tag">STAGE 4</span>
+          <span class="stage-name">post_processing2.py — Sputtering Filter</span>
+        </div>
+        <div class="stage-body">
+          <div class="io-row">
+            <div class="io-box">
+              <div class="io-label">Input</div>
+              <div class="io-value">sputtering_database_clean.csv</div>
+            </div>
+            <div class="io-box">
+              <div class="io-label">Output</div>
+              <div class="io-value">sputtering_database_clean_final.csv</div>
+            </div>
+          </div>
+          <p>Filters the <code>Method</code> column for keywords:
+            <code>sputter, magnetron, hipims, ibs, ion beam, rfms, dcms, pulsed dc</code>. Removes rows where the LLM
+            extracted a non-sputtering paper (CVD, ALD, PLD, e-beam) that slipped through Stage 2's prompt.</p>
+          <div class="callout warning">
+            <strong>Bug fixed in this version</strong>
+            The original code had a missing comma: <code>'Sputter'</code><code>'magnetron'</code> — Python's implicit
+            string concatenation made this <code>'Sputtermagnetron'</code> which never matched anything. Fixed:
+            <code>'Sputter',</code> <code>'magnetron',</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage 5 -->
+      <div class="stage-card">
+        <div class="stage-header">
+          <span class="stage-tag">STAGE 5</span>
+          <span class="stage-name">build_vector_db.py — SPECTER Embedding → ChromaDB</span>
+        </div>
+        <div class="stage-body">
+          <div class="io-row">
+            <div class="io-box">
+              <div class="io-label">Input</div>
+              <div class="io-value">sputtering_database_clean_final.csv</div>
+            </div>
+            <div class="io-box">
+              <div class="io-label">Output</div>
+              <div class="io-value">vector_database/chroma.sqlite3</div>
+            </div>
+          </div>
+          <p><strong>Document format</strong> (what gets embedded):</p>
+          <pre><code>Material: ZnO | Substrate: Glass | Deposition Method: RF Magnetron Sputtering |
+Gas Mixture: Ar/O2 | Target Power: 150.0 W | Working Pressure: 0.667 Pa |
+Base Pressure: Not specified | Substrate Temperature: 300.0 °C | Film Thickness: 500.0 nm</code></pre>
+          <p><strong>Why labelled key-value format over a sentence?</strong><br />
+            The original format was <em>"To deposit ZnO on a Glass substrate using RF Magnetron Sputtering..."</em> — a
+            reconstructed sentence where "ZnO" is just another word. SPECTER cannot distinguish material from substrate
+            from value. The labelled format preserves all semantic distinctions and enables accurate multi-condition
+            queries ("low pressure ZnO on flexible substrate").</p>
+          <p><strong>Deduplication</strong>: <code>drop_duplicates(subset=['Paper_ID'])</code> before ingestion.</p>
+          <p><strong>upsert() vs add()</strong>: <code>add()</code> crashes with <code>DuplicateIDError</code> if run
+            twice. <code>upsert()</code> updates safely — script is idempotent.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── SECTION 6 ─── -->
+    <section>
+      <div class="section-header">
+        <div class="section-num">6</div>
+        <h2>The Application — Two-Tab Design</h2>
+      </div>
+
+      <h3>The Macro / Micro Split — The Most Important Design Decision</h3>
+      <div class="callout">
+        <strong>Core principle</strong>
+        Macro (Tab 1) = pandas math. LLM used only for language tasks (alias grouping).<br />
+        Micro (Tab 2) = LLM with retrieved context. Never used for arithmetic.
+      </div>
+
+      <p>LLMs are excellent at language understanding. They are <em>unreliable for arithmetic over large datasets</em>.
+        If you ask a chatbot "what is the mean power for ZnO?", it has two bad options:</p>
+      <ul>
+        <li>Try to compute from memory → hallucination (wrong number, stated confidently)</li>
+        <li>Refuse → unhelpful</li>
+      </ul>
+      <p>The Macro tab computes statistics using pandas on 5,293 actual rows. This is mathematically exact. The LLM's
+        only role in Tab 1 is to group <code>["ZnO", "zinc oxide", "Zn0", "ZnO:Al"]</code> into one family — a language
+        task it handles perfectly.</p>
+
+      <h3>Tab 1: Statistical Overview (Macro) — Full Flow</h3>
+      <ol>
+        <li>User types a material name (e.g. <code>ZnO</code>)</li>
+        <li>ChromaDB semantic search finds the 50 most relevant records using SPECTER</li>
+        <li>All unique <code>Material</code> values from those 50 records are collected as candidates</li>
+        <li><code>PydanticOutputParser</code> calls Gemini: "which of these belong to the ZnO family?"</li>
+        <li>Gemini returns a typed <code>MaterialAliases(aliases=["ZnO", "zinc oxide", ...])</code> object</li>
+        <li>The CSV is filtered to only rows matching those aliases</li>
+        <li>pandas computes: mean, median, mode, min, max for Power, Temperature, Pressure</li>
+        <li>Plotly renders 4 charts: substrate bar chart, power histogram, temperature histogram, pressure histogram
+        </li>
+      </ol>
+
+      <h3>Tab 2: AI Chatbot (Micro) — Full Flow</h3>
+      <ol>
+        <li>User asks: <em>"What power was used for YBCO on MgO substrate?"</em></li>
+        <li><strong>LangGraph Router Node</strong>: Gemini classifies the query as <code>"retrieval"</code> or
+          <code>"statistical"</code></li>
+        <li>If <code>"retrieval"</code>: ChromaDB returns top-10 semantically similar records using SPECTER</li>
+        <li>Gemini reads those 10 records + last 3 conversation turns → generates a grounded answer</li>
+        <li>Sources listed below answer (Paper_IDs cited)</li>
+        <li>If <code>"statistical"</code>: Redirect message sent, no database access</li>
+      </ol>
+
+      <h4>Chat Memory</h4>
+      <p>The last 3 conversation exchanges are injected into every prompt. Without this, follow-up questions fail:</p>
+      <pre><code>User: What parameters were used for ZnO?
+AI:   [lists parameters from 3 papers]
+
+User: What about the substrate?   ← "substrate" refers to ZnO context
+AI:   [without memory: "which material are you referring to?"]
+      [with memory: correctly understands this is still about ZnO]</code></pre>
+
+      <h4>LangGraph Routing — Graph vs. Prompt</h4>
+      <pre><code># Old: fragile prompt instruction (LLM can ignore it)
+"RULE 4: If user asks for statistics, reply with 'I am the Micro bot...'"
+
+# New: graph edge (enforced in Python code)
+graph.add_conditional_edges("router", _route_decision, {
+    "retrieval":   "retrieval",    # only reachable if router returns "retrieval"
+    "statistical": "statistical",  # redirect node — zero database access
+})</code></pre>
+    </section>
+
+    <!-- ─── SECTION 7 ─── -->
+    <section>
+      <div class="section-header">
+        <div class="section-num">7</div>
+        <h2>Key Architectural Decisions</h2>
+      </div>
+
+      <h3>Why Not One Big Chatbot?</h3>
+      <p>The naive approach: one chatbot with access to the CSV, the vector DB, and let it handle everything. Problems:
+      </p>
+      <ul>
+        <li>LLMs cannot reliably compute mean/median/mode over thousands of rows</li>
+        <li>No separation between "hallucinated knowledge" and "database knowledge"</li>
+        <li>No grounding — which paper did this number come from?</li>
+      </ul>
+      <p>The Macro/Micro split enforces an iron boundary: statistics come from pandas (exact), specific facts come from
+        retrieved database entries (cited).</p>
+
+      <h3>Why Store Extracted Fields, Not Full Paper Text?</h3>
+      <p>Common RAG embeds full paper chunks and retrieves them. For this domain, the goal is not to reproduce the paper
+        — it's to get specific numeric values. If full text is embedded and retrieved, the LLM must still parse numbers
+        out of prose, reintroducing the NER problem. By running NER first (Stage 2) and storing structured fields, every
+        query returns clean <code>Power: 150 W</code>, not prose.</p>
+
+      <h3>Why config.json + config_loader.py?</h3>
+      <p>Original: 6 scripts with hardcoded <code>D:\UGP_METHOD2\...</code> paths. Impossible to run on any other
+        machine.</p>
+      <p>Solution: <code>config.json</code> defines all paths as relative paths (<code>./data/grobid_xml</code>).
+        <code>config_loader.py</code> resolves them to absolute paths at runtime. Result: project works on any OS, any
+        directory, for any user.</p>
+
+      <h3>Why .env for API Keys?</h3>
+      <p>Hardcoded API keys in source files get committed to Git and exposed publicly. <code>.env</code> files are
+        gitignored. <code>python-dotenv</code> loads them at runtime. The <code>.env.example</code> template shows users
+        exactly what to fill in without exposing real keys.</p>
+
+      <h3>Why run_pipeline.py?</h3>
+      <p>6 disconnected scripts run in a specific order with dependencies between them. Without an orchestrator, a new
+        user must figure out the order, manually check which stages are done, and handle errors between scripts.
+        <code>run_pipeline.py</code> chains all stages, implements skip logic (don't redo completed stages), and
+        provides <code>--stage</code> / <code>--from</code> / <code>--force</code> flags for surgical re-runs.</p>
+    </section>
+
+    <!-- ─── SECTION 8 ─── -->
+    <section>
+      <div class="section-header">
+        <div class="section-num">8</div>
+        <h2>How to Run</h2>
+      </div>
+
+      <h3>First-Time Setup (Dashboard only — no re-extraction needed)</h3>
+      <pre><code># 1. Install all dependencies
+pip install -r requirements.txt
+# Note: SPECTER model (~400 MB) downloads on first use of build_vector_db.py
+
+# 2. API keys (needed only for the app at runtime, not for building the vector DB)
+copy .env.example .env
+# Edit .env: add GEMINI_API_KEY_1=your_key_here
+
+# 3. Rebuild vector DB with SPECTER (delete old ChromaDB first)
+rmdir /s /q vector_database    # Windows
+python build_vector_db.py
+# Expected: "[OK] 5293 unique papers ready | Batch 1-100 / 5293 done | [DONE]"
+
+# 4. Launch dashboard
+python -m streamlit run app.py
+# Open http://localhost:8501 — enter Gemini API key in sidebar</code></pre>
+
+      <h3>Running the Full Extraction Pipeline (for new papers)</h3>
+      <pre><code>python run_pipeline.py --list       # See all stages + done/pending status
+python run_pipeline.py --stage 2    # Run only Gemini NER
+python run_pipeline.py --stage 5    # Rebuild vector DB only
+python run_pipeline.py --from 3     # Run stages 3 through 6
+python run_pipeline.py              # Full pipeline (all 6 stages)</code></pre>
+
+      <h3>Minimum Requirements</h3>
+      <ul>
+        <li>Python 3.10+</li>
+        <li>~2 GB disk space (SPECTER model cache + vector DB)</li>
+        <li>Gemini API key (free at <a href="https://aistudio.google.com">aistudio.google.com</a>) — only for app
+          queries</li>
+        <li>Internet on first run only (to download SPECTER from HuggingFace)</li>
+      </ul>
+    </section>
+
+    <!-- ─── SECTION 9 ─── -->
+    <section>
+      <div class="section-header">
+        <div class="section-num">9</div>
+        <h2>Project File Map</h2>
+      </div>
+
+      <div class="filemap">
+        <span class="file-muted">sputtering-rag-ai/</span><br />
+        <span class="file-muted">│</span><br />
+        <span class="file-muted">├── </span><span class="file-yellow">config.json</span> <span class="file-muted">← All
+          user-configurable settings and paths</span><br />
+        <span class="file-muted">├── </span><span class="file-green">config_loader.py</span> <span class="file-muted">←
+          Shared path resolver imported by all scripts</span><br />
+        <span class="file-muted">├── </span><span class="file-blue">.env.example</span> <span class="file-muted">← API
+          key template — copy to .env</span><br />
+        <span class="file-muted">├── </span><span class="file-blue">.gitignore</span> <span class="file-muted">←
+          Prevents .env and data/ from being committed</span><br />
+        <span class="file-muted">├── </span><span class="file-blue">requirements.txt</span> <span class="file-muted">←
+          All dependencies with minimum versions</span><br />
+        <span class="file-muted">│</span><br />
+        <span class="file-muted">├── ── Pipeline Scripts ────────────────────────────────────</span><br />
+        <span class="file-muted">│</span><br />
+        <span class="file-muted">├── </span><span class="file-green">full_grobid_pipeline.py</span> <span
+          class="file-muted">← Stage 1: TEI XML → structured JSON</span><br />
+        <span class="file-muted">├── </span><span class="file-green">master_data_extraction.py</span> <span
+          class="file-muted">← Stage 2: JSON → Gemini NER → extracted JSON</span><br />
+        <span class="file-muted">├── </span><span class="file-green">post_processing_eda.py</span> <span
+          class="file-muted">← Stage 3: JSON → unit normalisation → CSV</span><br />
+        <span class="file-muted">├── </span><span class="file-green">post_processing2.py</span> <span
+          class="file-muted">← Stage 4: CSV → sputtering filter → final CSV</span><br />
+        <span class="file-muted">├── </span><span class="file-green">build_vector_db.py</span> <span
+          class="file-muted">← Stage 5: CSV → SPECTER embeddings → ChromaDB</span><br />
+        <span class="file-muted">├── </span><span class="file-green">run_pipeline.py</span> <span class="file-muted">←
+          Orchestrator: chains all 6 stages with CLI flags</span><br />
+        <span class="file-muted">│</span><br />
+        <span class="file-muted">├── ── Application ─────────────────────────────────────────</span><br />
+        <span class="file-muted">│</span><br />
+        <span class="file-muted">├── </span><span class="file-green">app.py</span> <span class="file-muted">← Streamlit
+          dashboard (Tab 1: Macro, Tab 2: Micro)</span><br />
+        <span class="file-muted">├── </span><span class="file-green">agent.py</span> <span class="file-muted">←
+          LangGraph router agent (3-node graph)</span><br />
+        <span class="file-muted">│</span><br />
+        <span class="file-muted">├── ── Data Assets ─────────────────────────────────────────</span><br />
+        <span class="file-muted">│</span><br />
+        <span class="file-muted">├── </span><span class="file-yellow">sputtering_database_clean_final.csv</span> <span
+          class="file-muted">← 5,293 papers, 10 normalised columns</span><br />
+        <span class="file-muted">└── </span><span class="file-yellow">vector_database/</span> <span class="file-muted">←
+          ChromaDB persistent store (SPECTER vectors)</span><br />
+        <span class="file-muted"> └── chroma.sqlite3</span>
+      </div>
+    </section>
+
+    <!-- ─── SECTION 10 ─── -->
+    <section>
+      <div class="section-header">
+        <div class="section-num">10</div>
+        <h2>Glossary</h2>
+      </div>
+
+      <div class="glossary-grid">
+        <div class="glossary-item">
+          <div class="glossary-term">Sputtering</div>
+          <div class="glossary-def">A physical vapour deposition technique where energetic ions knock atoms off a target
+            material, which then deposit onto a substrate as a thin film.</div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-term">RF Magnetron Sputtering</div>
+          <div class="glossary-def">Uses radio-frequency (typically 13.56 MHz) power + magnetic field to sustain a
+            plasma and improve deposition efficiency, especially for insulating targets.</div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-term">HiPIMS</div>
+          <div class="glossary-def">High Power Impulse Magnetron Sputtering — uses very high peak power in short pulses
+            (low duty cycle). Produces denser, smoother films.</div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-term">Working Pressure</div>
+          <div class="glossary-def">Gas pressure inside the chamber during deposition. Typically 0.1–10 Pa. Affects mean
+            free path of sputtered atoms and film morphology.</div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-term">Base Pressure</div>
+          <div class="glossary-def">Residual vacuum pressure before introducing process gas. Typically 10⁻⁴ to 10⁻⁶ Pa.
+            Lower = fewer contaminants in the film.</div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-term">TEI XML</div>
+          <div class="glossary-def">Text Encoding Initiative XML — a scholarly standard for representing structured text
+            with semantic markup. GROBID outputs this format.</div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-term">NER</div>
+          <div class="glossary-def">Named Entity Recognition — extracting structured information (entities) from
+            unstructured text. Here: extracting "150 W" as the Power field from a paragraph.</div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-term">RAG</div>
+          <div class="glossary-def">Retrieval-Augmented Generation — LLM answers are grounded in retrieved documents
+            rather than trained knowledge, preventing hallucination.</div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-term">Vector Embedding</div>
+          <div class="glossary-def">A high-dimensional numerical representation of text that captures semantic meaning.
+            Similar texts produce similar vectors (close in vector space).</div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-term">SPECTER</div>
+          <div class="glossary-def">Scientific Paper Embeddings using Citation-informed TransformERs. An AllenAI model
+            trained on 146M paper citation pairs for scientific document similarity.</div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-term">Few-shot Prompting</div>
+          <div class="glossary-def">Including 2–5 input/output examples in an LLM prompt before the actual input.
+            Calibrates the LLM's output format and style for edge cases.</div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-term">LangGraph</div>
+          <div class="glossary-def">A framework for building stateful multi-step LLM workflows as directed graphs. Each
+            node is a processing step; edges define routing logic.</div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /content -->
+
+  <div
+    style="text-align:center; padding: 40px; color: #94a3b8; font-size: 13px; border-top: 1px solid #e2e8f0; margin-top: 40px;">
+    Sputtering RAG AI — Project Reference Document &nbsp;|&nbsp; IIT Kanpur, Materials Science Department
+  </div>
+
+</body>
+
+</html>

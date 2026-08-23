@@ -1,0 +1,29 @@
+{
+  "grobid_server": "https://kermitt2-grobid.hf.space",
+  "batch_size": 1,
+  "sleep_time": 5,
+  "timeout": 120,
+  "coordinates": [],
+
+  "paths": {
+    "xml_input_dir":          "./data/grobid_xml",
+    "processed_articles_dir": "./data/processed_articles",
+    "extracted_data_dir":     "./data/extracted_data",
+    "cleaned_csv":            "./sputtering_database_clean.csv",
+    "final_csv":              "./sputtering_database_clean_final.csv",
+    "vector_database":        "./vector_database"
+  },
+
+  "extraction": {
+    "model":               "gemini-2.5-flash",
+    "sleep_between_calls": 4.5,
+    "max_retries":         3
+  },
+
+  "vector_db": {
+    "embedding_model":               "allenai-specter",
+    "collection_name":               "sputtering_papers",
+    "thickness_outlier_threshold_nm": 2000,
+    "batch_size":                    100
+  }
+}
